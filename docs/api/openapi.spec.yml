@@ -1,0 +1,118 @@
+---
+openapi: "3.1.0"
+info:
+  version: 1.0.0
+  title: HTTP Server with REST API for Binary File CRUD Operations
+  description: This API handles simple create, read, update and delete operations for records in binary file
+
+paths:
+  "/records":
+    post:
+      description: Create new record
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/Data"
+      responses:
+        '200':
+          description: Success message
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Response"
+        '500':
+          description: Internal server error with message
+          content:
+            "application/json":
+              schema:
+                  $ref: "#/components/schemas/Response"
+
+    "/records/{id}":
+    get:
+      description: Get record with ID
+      responses:
+        '200':
+          description: Returned record based on provided ID
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Response"
+        '500':
+          description: Internal server error with message
+          content:
+            "application/json":
+              schema:
+                  $ref: "#/components/schemas/Response"
+    put:
+      description: Update record by ID and provided record
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/Data"
+      responses:
+        '200':
+          description: Success message
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Response"
+        '500':
+          description: Internal server error with message
+          content:
+            "application/json":
+              schema:
+                  $ref: "#/components/schemas/Response"
+    delete:
+      description: Delete record by ID
+      responses:
+        '200':
+          description: Success message
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Response"
+        '500':
+          description: Internal server error with message
+          content:
+            "application/json":
+              schema:
+                  $ref: "#/components/schemas/Response"
+
+components:
+  schemas:
+    Response:
+      type: object
+      required:
+        - status
+        - message
+        - data
+      properties:
+        status:
+          type: string
+          example: "success"
+        message:
+          type: string
+          example: "record successfully created"
+        data:
+          schema:
+            $ref: "#/components/schemas/Data"
+    Data:
+      type: object
+      properties:
+        ID:
+          type: number
+          example: 1
+        IntValue:
+          type: number
+          example: 42
+        StrValue:
+          type: string
+          example: "foo"
+        BoolValue:
+          type: bool
+          example: true
+        TimeValue:
+          type: time
+          example: 2023-10-10T21:57:00+02:00
