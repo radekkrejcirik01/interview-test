@@ -13,7 +13,3 @@ services:
       start_period: 1s
     ports:
       - "8080:8080"
-
-networks:
- fullstack:
-  driver: bridge
