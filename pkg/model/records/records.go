@@ -4,6 +4,8 @@ import (
 	"encoding/gob"
 	"os"
 	"time"
+
+	"github.com/samber/lo"
 )
 
 const FILE_NAME = "records.bin"
@@ -16,7 +18,7 @@ type Record struct {
 	TimeValue time.Time
 }
 
-// CreateRecord writes new record to binary file
+// CreateRecord create new record in binary file
 func CreateRecord(t *Record) error {
 	// Read existing records from the file.
 	existingData, err := readBinaryFile()
@@ -36,7 +38,7 @@ func CreateRecord(t *Record) error {
 	return err
 }
 
-// GetRecord gets recordy by ID from binary file
+// GetRecord get record by ID from binary file
 func GetRecord(id int64) (*Record, error) {
 	// Read existing records from the file.
 	data, err := readBinaryFile()
@@ -44,13 +46,13 @@ func GetRecord(id int64) (*Record, error) {
 		return nil, err
 	}
 
-	// Get records
+	// Get record
 	record := getRecordByID(data, id)
 
 	return record, nil
 }
 
-// UpdateRecord updates record by ID in binary file
+// UpdateRecord update record by ID in binary file
 func UpdateRecord(id int64, t *Record) error {
 	// Read existing records from the file.
 	existingData, err := readBinaryFile()
@@ -64,6 +66,7 @@ func UpdateRecord(id int64, t *Record) error {
 			if v.ID == id {
 				t.ID = id
 				existingData[i] = *t
+				break
 			}
 		}
 	}
@@ -73,10 +76,8 @@ func UpdateRecord(id int64, t *Record) error {
 	return err
 }
 
-// DeleteRecord deletes record by ID in binary file
+// DeleteRecord delete record by ID in binary file
 func DeleteRecord(id int64) error {
-	var data []Record
-
 	// Read existing records from the file.
 	existingData, err := readBinaryFile()
 	if err != nil {
@@ -84,14 +85,12 @@ func DeleteRecord(id int64) error {
 	}
 
 	// Remove value from records array by ID
-	for _, v := range existingData {
-		if v.ID != id {
-			data = append(data, v)
-		}
-	}
+	records := lo.Filter(existingData, func(x Record, index int) bool {
+		return x.ID != id
+	})
 
 	// Write the adjusted records back to the file.
-	err = writeBinaryFile(data)
+	err = writeBinaryFile(records)
 	return err
 }
 
@@ -141,7 +140,7 @@ func readBinaryFile() ([]Record, error) {
 	return data, nil
 }
 
-// getID helper function for retrieving id by already stored data
+// getID get new ID from stored data
 func getID(data []Record) int64 {
 	if len(data) > 0 {
 		return data[0].ID + 1
@@ -149,7 +148,7 @@ func getID(data []Record) int64 {
 	return 1
 }
 
-// getRecordByID helper function to get recordy by ID
+// getRecordByID get record from list by ID
 func getRecordByID(data []Record, id int64) *Record {
 	for _, item := range data {
 		if item.ID == id {

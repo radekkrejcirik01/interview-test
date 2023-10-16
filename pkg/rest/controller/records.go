@@ -32,16 +32,16 @@ func CreateRecord(c *fiber.Ctx) error {
 	})
 }
 
-// GetRecord retrieves record by ID
+// GetRecord get a record by ID
 func GetRecord(c *fiber.Ctx) error {
 	id, err := helpers.StringToInt64(c.Params("id"))
 	if err != nil {
 		return err
 	}
 
-	data, err := records.GetRecord(id)
+	record, err := records.GetRecord(id)
 
-	if data == nil {
+	if record == nil {
 		return c.Status(fiber.StatusNotFound).JSON(Response{
 			Status:  "error",
 			Message: "no record found",
@@ -58,11 +58,11 @@ func GetRecord(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(Response{
 		Status:  "success",
 		Message: "record successfuly retrieved",
-		Data:    data,
+		Data:    record,
 	})
 }
 
-// UpdateRecord update record by ID
+// UpdateRecord update a record by ID
 func UpdateRecord(c *fiber.Ctx) error {
 	id, err := helpers.StringToInt64(c.Params("id"))
 	if err != nil {
@@ -92,7 +92,7 @@ func UpdateRecord(c *fiber.Ctx) error {
 	})
 }
 
-// DeleteRecord delete record with ID
+// DeleteRecord delete a record with ID
 func DeleteRecord(c *fiber.Ctx) error {
 	id, err := helpers.StringToInt64(c.Params("id"))
 	if err != nil {
@@ -112,7 +112,7 @@ func DeleteRecord(c *fiber.Ctx) error {
 	})
 }
 
-// ReadyzHandler basic health check for availability of the service
+// ReadyzHandler check availability of the service
 func HealthCheck(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(Response{
 		Status:  "success",
